@@ -1,6 +1,6 @@
 const AboutUs = () =>{
     return(
-        <>helllo </>
+        <>hello Welcome </>
     )
 }
 
