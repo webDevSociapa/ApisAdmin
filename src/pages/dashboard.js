@@ -5,3 +5,5 @@ const DashBoared = () =>{
         </>
     )
 }
+
+export default DashBoared
