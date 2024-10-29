@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-// import Textarea from '@mui/joy/Textarea';
+import Textarea from '@mui/joy/Textarea';
 
 const Home = () => {
   const HomeContent = [
@@ -151,15 +151,14 @@ const Home = () => {
           )}
 
           {["Headline", "Change Banner Text"].includes(currentItem) && (
-            <Box>eeeee</Box>
-            // <Textarea
-            //   minRows={3}
-            //   fullWidth
-            //   placeholder={`Edit ${currentItem}`}
-            //   value={newContent}
-            //   onChange={(e) => setNewContent(e.target.value)}
-            //   sx={{ mt: 2 }}
-            // />
+            <Textarea
+              minRows={3}
+              fullWidth
+              placeholder={`Edit ${currentItem}`}
+              value={newContent}
+              onChange={(e) => setNewContent(e.target.value)}
+              sx={{ mt: 2 }}
+            />
           )}
         </DialogContent>
         <DialogActions>
