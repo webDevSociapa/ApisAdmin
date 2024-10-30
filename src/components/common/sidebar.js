@@ -1,20 +1,31 @@
 // components/Sidebar.js
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Drawer, List, ListItem, ListItemText, ListItemIcon, Divider, Typography, Avatar, Box, IconButton } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import HomeIcon from '@mui/icons-material/Home';
-import InfoIcon from '@mui/icons-material/Info';
-import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermark';
-import PeopleIcon from '@mui/icons-material/People';
-import WorkIcon from '@mui/icons-material/Work';
-import CameraIcon from '@mui/icons-material/Camera';
-import ContactMailIcon from '@mui/icons-material/ContactMail';
-import PublicIcon from '@mui/icons-material/Public';
-import PrivacyTipIcon from '@mui/icons-material/PrivacyTip';
-import CopyrightIcon from '@mui/icons-material/Copyright';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import MenuIcon from '@mui/icons-material/Menu';
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Divider,
+  Box,
+  IconButton,
+} from '@mui/material';
+import {
+  Dashboard as DashboardIcon,
+  Home as HomeIcon,
+  Info as InfoIcon,
+  BrandingWatermark as BrandingWatermarkIcon,
+  People as PeopleIcon,
+  Work as WorkIcon,
+  Camera as CameraIcon,
+  ContactMail as ContactMailIcon,
+  Public as PublicIcon,
+  PrivacyTip as PrivacyTipIcon,
+  Copyright as CopyrightIcon,
+  ArrowForward as ArrowForwardIcon,
+  Menu as MenuIcon,
+} from '@mui/icons-material';
 
 const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, link: '/dashboard' },
@@ -31,8 +42,8 @@ const menuItems = [
 ];
 
 const Sidebar = () => {
-  const drawerWidth = 250;
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const drawerWidth = isCollapsed ? 60 : 250;
 
   return (
     <Drawer
@@ -40,18 +51,18 @@ const Sidebar = () => {
         width: drawerWidth,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: isCollapsed ? 60 : drawerWidth,
+          width: drawerWidth,
           boxSizing: 'border-box',
           backgroundColor: '#FFFBF6',
-          color: '#fff',
+          color: '#333',
+          transition: 'width 0.3s',
         },
       }}
       variant="permanent"
       anchor="left"
     >
-      {/* Profile Section */}
+      {/* Toggle Button */}
       <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
-        
         <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
           {isCollapsed ? <MenuIcon sx={{ color: '#333' }} /> : <ArrowForwardIcon sx={{ color: '#333' }} />}
         </IconButton>
