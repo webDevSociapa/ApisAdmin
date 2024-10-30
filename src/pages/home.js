@@ -51,6 +51,7 @@ const Home = () => {
             border: "1px solid #AE844A",
             p: 3,
             mb: 2,
+            px:2,
             borderRadius: "10px",
             fontFamily: "jost",
             fontWeight: "400",
