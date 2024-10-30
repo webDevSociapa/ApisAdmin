@@ -9,9 +9,10 @@ import {
   DialogTitle,
   IconButton,
   Typography,
+  TextareaAutosize,
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import Textarea from '@mui/joy/Textarea';
+import { Padding } from "@mui/icons-material";
 
 const Home = () => {
   const HomeContent = [
@@ -33,7 +34,7 @@ const Home = () => {
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setOpen(false);                                                                              
     setNewContent('');
   };
 
@@ -42,6 +43,7 @@ const Home = () => {
     handleClose();
   };
 
+ 
   return (
     <div>
       {HomeContent.map((itm, index) => (
@@ -57,7 +59,7 @@ const Home = () => {
             fontWeight: "400",
             display: "flex",
             justifyContent: "space-between",
-          }}
+          }} style={{Padding:"20px 60px"}}
         >
           <span>{itm.name}</span>
           <span
@@ -152,14 +154,15 @@ const Home = () => {
           )}
 
           {["Headline", "Change Banner Text"].includes(currentItem) && (
-            <Textarea
-              minRows={3}
-              fullWidth
-              placeholder={`Edit ${currentItem}`}
-              value={newContent}
-              onChange={(e) => setNewContent(e.target.value)}
-              sx={{ mt: 2 }}
-            />
+            <TextareaAutosize
+            minRows={3}
+            placeholder={`Edit ${currentItem}`}
+            value={newContent}
+            onChange={(e) => setNewContent(e.target.value)}
+            style={{ width: '100%' }} // Set width to your desired value
+            sx={{ mt: 2, width: '100%' }} // Or adjust as needed
+          />
+          
           )}
         </DialogContent>
         <DialogActions>
