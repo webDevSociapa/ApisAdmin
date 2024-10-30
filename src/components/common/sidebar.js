@@ -26,19 +26,23 @@ import {
   ArrowForward as ArrowForwardIcon,
   Menu as MenuIcon,
 } from '@mui/icons-material';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, link: '/dashboard' },
   { text: 'Home', icon: <HomeIcon />, link: '/home' },
   { text: 'About Us', icon: <InfoIcon />, link: '/about-us' },
   { text: 'Our Brands', icon: <BrandingWatermarkIcon />, link: '/our-brands' },
+  
   { text: 'Investors', icon: <PeopleIcon />, link: '/investors' },
   { text: 'Careers', icon: <WorkIcon />, link: '/careers' },
   { text: 'Media', icon: <CameraIcon />, link: '/media' },
   { text: 'Contact Us', icon: <ContactMailIcon />, link: '/contact-us' },
-  { text: 'Social Media', icon: <PublicIcon />, link: '/social-media' },
-  { text: 'Privacy Policy', icon: <PrivacyTipIcon />, link: '/privacy-policy' },
-  { text: 'Copy Rights', icon: <CopyrightIcon />, link: '/copy-rights' },
+  {text:'Settings',icon: <SettingsIcon/>, link:'/settings'}
+
+  // { text: 'Social Media', icon: <PublicIcon />, link: '/social-media' },
+  // { text: 'Privacy Policy', icon: <PrivacyTipIcon />, link: '/privacy-policy' },
+  // { text: 'Copy Rights', icon: <CopyrightIcon />, link: '/copy-rights' },
 ];
 
 const Sidebar = () => {
