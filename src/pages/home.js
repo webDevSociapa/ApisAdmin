@@ -66,7 +66,7 @@ const Home = () => {
             className="underline cursor-pointer"
             onClick={() => handleEditClick(itm)}
           >
-            Edit
+            Edit  
           </span>
         </Box>
       ))}
