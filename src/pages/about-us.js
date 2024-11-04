@@ -96,15 +96,14 @@ const AboutData = () => {
                 <DialogContent dividers>
                     {currentItem === "Banner" && (
                         <Box>
-                            <Typography variant="subtitle1">Existing Logos:</Typography>
+                            <Typography variant="subtitle1">Existing Banner:</Typography>
                             {/* Render a list of existing logos (placeholder) */}
                             <Box display="flex" gap={2} mt={2}>
                                 <img src="/logo1.png" alt="Logo 1" width={50} />
-                                <img src="/logo2.png" alt="Logo 2" width={50} />
                                 {/* Add more logos as needed */}
                             </Box>
                             <Button variant="contained" component="label" sx={{ mt: 2 }}>
-                                Upload New Logo
+                                Upload New Banner
                                 <input type="file" hidden onChange={(e) => console.log(e.target.files)} />
                             </Button>
                         </Box>
@@ -231,7 +230,7 @@ const AboutData = () => {
                             />
                             <TextField
                             fullWidth
-                            label="add year here"
+                            label="add Image Url here"
                             />
                         </Box>
 
