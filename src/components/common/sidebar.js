@@ -26,6 +26,7 @@ import {
   ArrowForward as ArrowForwardIcon,
   Menu as MenuIcon,
 } from '@mui/icons-material';
+import StayCurrentPortraitIcon from '@mui/icons-material/StayCurrentPortrait';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 const menuItems = [
@@ -37,6 +38,8 @@ const menuItems = [
   { text: 'Investors', icon: <PeopleIcon />, link: '/investors' },
   { text: 'Careers', icon: <WorkIcon />, link: '/careers' },
   { text: 'Media', icon: <CameraIcon />, link: '/media' },
+  { text: 'Sustainability', icon: <CameraIcon />, link: '/sustainability' },
+  { text: 'Blogs', icon: <StayCurrentPortraitIcon />, link: '/blogs' },
   { text: 'Contact Us', icon: <ContactMailIcon />, link: '/contact-us' },
   {text:'Settings',icon: <SettingsIcon/>, link:'/settings'}
 
