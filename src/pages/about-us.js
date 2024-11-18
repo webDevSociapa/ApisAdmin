@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     TextField,
@@ -13,8 +13,14 @@ import {
     Card,
     Grid,
     InputAdornment,
+    Radio,
+    FormControl,
+    FormControlLabel,
+    FormLabel,
+    RadioGroup,
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import axios from "axios";
 
 const AboutData = () => {
     const AboutData = [
@@ -34,6 +40,18 @@ const AboutData = () => {
     const [open, setOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState('');
     const [newContent, setNewContent] = useState('');
+    const [aboutBanner, setAboutBanner] = useState([])
+    const [editBanner, setEditBanner] = useState([])
+    const [bannerImage, setBannerImage] = useState([])
+    const [showHide, setShowHide] = useState(true)
+    const [apisNumbers, setApisNumbers] = useState([])
+    const [updatedValues, setUpdatedValues] = useState({});
+    const [apisNumbersEdit, setApisNumbersEdit] = useState([
+        { count: 2580, title: "Product Ranges", key: "productRanges" },
+        { count: 580, title: "Years Of Legacy", key: "yearsOfLegacy" },
+        { count: 285, title: "New Customer", key: "newCustomers" },
+        { count: 6580, title: "Number Of Outlets", key: "numberOfOutlets" }
+    ]);
 
     const handleEditClick = (item) => {
         setCurrentItem(item.name);
@@ -45,10 +63,100 @@ const AboutData = () => {
         setNewContent('');
     };
 
-    const handleUpdate = () => {
-        console.log(`Updated ${currentItem}: ${newContent}`);
-        handleClose();
+    // const handleUpdate = () => {
+    //     console.log(`Updated ${currentItem}: ${newContent}`);
+    //     handleClose();
+    // };
+
+    const handleChangeFile = (e) => {
+        setBannerImage(e.target.files[0]);
     };
+
+    const handleUpdate = async () => {
+        if (currentItem === "Banner" && bannerImage) {
+            try {
+                const formData = new FormData();
+                formData.append('bannerImage', bannerImage);
+
+                const response = await axios.post('/api/AboutUs/banner', formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+
+                console.log("Banner Updated:", response.data);
+                setAboutBanner(response.data.bannerImage);
+            } catch (error) {
+                console.error("Error updating banner:", error);
+            }
+        }
+        else if (currentItem === "Apis Data In Numbers") {
+            // Format the updatedValues into an array
+            const dataToSend = apisNumbersEdit.map(item => ({
+                key: item.key,
+                title: item.title, // Include title
+                count: updatedValues[item.key] !== undefined ? updatedValues[item.key] : item.count // Use updated value if exists, otherwise use the current count
+            }));
+
+
+
+
+            try {
+                const response = await axios.put('/api/AboutUs/ApisDataNumbers', dataToSend);
+                console.log("API Data Updated:", response.data);
+                // Optionally, refresh the state or show a success message
+            } catch (error) {
+                console.error("Error updating API data:", error);
+            }
+        }
+        else if (currentItem === "Our Directors Info") {
+            try {
+                const response = await axios.put('/api/AboutUs/OurDirectorsInfo', updatedValues);
+                console.log("response", response);
+
+            } catch (error) {
+
+            }
+        }
+        else if (currentItem === "Our Milestones") {
+            try {
+                const response = await axios.put('/api/AboutUs/ourMilestones', updatedValues);
+                console.log("response", response);
+
+            } catch (error) {
+
+            }
+        }
+    };
+
+    const handleInputChange = (key, value) => {
+        setUpdatedValues(prev => ({ ...prev, [key]: String(value) })); // Convert value to string
+    };
+
+
+    useEffect(() => {
+        const fetchAboutBanner = async () => {
+            try {
+                const response = await axios.get('/api/AboutUs/banner');
+                console.log("Fetched Banner Data:", response.data);
+                setAboutBanner(response.data.bannerImage);
+            } catch (error) {
+                console.error("Error fetching banner:", error);
+            }
+        };
+
+        const getApisDataNumber = async () => {
+            try {
+                const response = await axios.get('/api/AboutUs/ApisDataNumbers');
+                setApisNumbers(response.data)
+                console.log("Fetched Apis Data Numbers:", response.data);
+            } catch (error) {
+                console.error("Error fetching Apis Data Numbers:", error);
+            }
+        };
+
+        fetchAboutBanner();
+        getApisDataNumber();
+    }, []);
+
     return (
         <div>
             {AboutData.map((itm, index) => (
@@ -97,92 +205,61 @@ const AboutData = () => {
                     {currentItem === "Banner" && (
                         <Box>
                             <Typography variant="subtitle1">Existing Banner:</Typography>
-                            {/* Render a list of existing logos (placeholder) */}
-                            <Box display="flex" gap={2} mt={2}>
-                                <img src="/logo1.png" alt="Logo 1" width={50} />
-                                {/* Add more logos as needed */}
-                            </Box>
-                            <Button variant="contained" component="label" sx={{ mt: 2 }}>
-                                Upload New Banner
-                                <input type="file" hidden onChange={(e) => console.log(e.target.files)} />
-                            </Button>
+                            {aboutBanner ? (
+                                <img src={aboutBanner} alt="Banner" width={250} height={250} />
+                            ) : (
+                                <Typography>No banner uploaded.</Typography>
+                            )}
+                            <input type="file" onChange={handleChangeFile} />
+                            <FormControl sx={{ mt: 2 }}>
+                                <FormLabel>Visibility</FormLabel>
+                                <RadioGroup
+                                    value={showHide ? "show" : "hide"}
+                                    onChange={(e) => setShowHide(e.target.value === "show")}
+                                >
+                                    <FormControlLabel value="show" control={<Radio />} label="Show" />
+                                    <FormControlLabel value="hide" control={<Radio />} label="Hide" />
+                                </RadioGroup>
+                            </FormControl>
                         </Box>
                     )}
 
                     {currentItem === "Apis Data In Numbers" && (
                         <Box padding={2}>
                             <Grid container spacing={2}>
-                                {CardsData.map((itm, index) => (
+                                {apisNumbersEdit.map((itm, index) => (
                                     <Grid item md={3} xs={12} key={index}>
                                         <Card sx={{ padding: 2, height: '100%' }}>
-                                            <Typography variant="h6">{itm.numbers}</Typography>
+                                            <Typography variant="h6">{itm.count}</Typography>
                                             <Typography variant="h6">{itm.title}</Typography>
                                         </Card>
                                     </Grid>
                                 ))}
                             </Grid>
-                            <Typography variant="h6" sx={{ mt: 2,mb:2 }}>Edit Data:</Typography>
-                           <Box>
-                           <TextField
-                                variant="outlined"
-                                label="Product Ranges"
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Button variant="contained">Update</Button>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{mb:2}}
-                            />
-                            <br/>
-                            <TextField
-                                variant="outlined"
-                                label="Years of legacy"
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Button variant="contained">Update</Button>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{mb:2}}
+                            <Typography variant="h6" sx={{ mt: 2, mb: 2 }}>Edit Data:</Typography>
+                            <Box>
 
-                            />
-                            <br/>
-
-                            <TextField
-                                variant="outlined"
-                                label="new Customer"
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Button variant="contained">Update</Button>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{mb:2}}
-
-                            />
-                            <br/>
-
-                            <TextField
-                                variant="outlined"
-                                label="number of outlets"
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Button variant="contained">Update</Button>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{mb:2}}
-
-                            />
-                           </Box>
+                                {apisNumbersEdit.map((itm) => (
+                                    <TextField
+                                        key={itm.key}
+                                        variant="outlined"
+                                        label={itm.title}
+                                        defaultValue={itm.count}
+                                        onChange={(e) => handleInputChange(itm.key, e.target.value)}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <Button variant="contained" onClick={handleUpdate}>Update</Button>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        sx={{ mb: 2 }}
+                                    />
+                                ))}
+                            </Box>
                         </Box>
                     )}
-                    
+
                     {currentItem === "Our Directors Info" && (
                         <Box>
                             <Typography variant="subtitle1">Our Directors Info:</Typography>
@@ -198,10 +275,9 @@ const AboutData = () => {
                                         </InputAdornment>
                                     ),
                                 }}
-                                sx={{mb:2}}
-
+                                sx={{ mb: 2 }}
                             />
-                            <br/>
+                            <br />
                             <TextField
                                 variant="outlined"
                                 label="Person2"
@@ -213,7 +289,7 @@ const AboutData = () => {
                                         </InputAdornment>
                                     ),
                                 }}
-                                sx={{mb:2}}
+                                sx={{ mb: 2 }}
 
                             />
                         </Box>
@@ -223,14 +299,14 @@ const AboutData = () => {
                             <Typography variant="subtitle2">Our Milestones:</Typography>
                             <Typography variant="subtitle1" marginBottom={2}>Add New Milestones:</Typography>
                             <TextField
-                            fullWidth
-                            label="add year here"
-                            sx={{mb:2}}
+                                fullWidth
+                                label="add year here"
+                                sx={{ mb: 2 }}
 
                             />
                             <TextField
-                            fullWidth
-                            label="add Image Url here"
+                                fullWidth
+                                label="add Image Url here"
                             />
                         </Box>
 

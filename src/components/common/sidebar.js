@@ -28,6 +28,7 @@ import {
 } from '@mui/icons-material';
 import StayCurrentPortraitIcon from '@mui/icons-material/StayCurrentPortrait';
 import SettingsIcon from '@mui/icons-material/Settings';
+import AccountMenu from './adminProfile';
 
 const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, link: '/dashboard' },
@@ -53,7 +54,8 @@ const Sidebar = () => {
   const drawerWidth = isCollapsed ? 60 : 250;
 
   return (
-    <Drawer
+   <Box>
+     <Drawer
       sx={{
         width: drawerWidth,
         flexShrink: 0,
@@ -64,6 +66,7 @@ const Sidebar = () => {
           color: '#333',
           transition: 'width 0.3s',
         },
+        display:"flex",
       }}
       variant="permanent"
       anchor="left"
@@ -77,6 +80,7 @@ const Sidebar = () => {
       <Divider />
 
       {/* Sidebar Items */}
+      {/*  */}
       <List>
         {menuItems.map((item, index) => (
           <Link key={index} href={item.link} passHref>
@@ -89,6 +93,8 @@ const Sidebar = () => {
       </List>
       <Divider />
     </Drawer>
+    <Box sx={{display:'f;e'}}></Box>
+   </Box>
   );
 };
 
