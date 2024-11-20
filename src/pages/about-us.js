@@ -21,11 +21,13 @@ import {
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const AboutData = () => {
     const AboutData = [
         { name: "Banner" },
         { name: "Apis Data In Numbers" },
+        { name: "ourValues" },
         { name: "Our Directors Info" },
         { name: "Our Milestones" },
     ]
@@ -40,18 +42,21 @@ const AboutData = () => {
     const [open, setOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState('');
     const [newContent, setNewContent] = useState('');
-    const [aboutBanner, setAboutBanner] = useState([])
+    const [aboutBanner, setAboutBanner] = useState('')
     const [editBanner, setEditBanner] = useState([])
-    const [bannerImage, setBannerImage] = useState([])
+    const [bannerImage, setBannerImage] = useState(null)
     const [showHide, setShowHide] = useState(true)
     const [apisNumbers, setApisNumbers] = useState([])
     const [updatedValues, setUpdatedValues] = useState({});
-    const [apisNumbersEdit, setApisNumbersEdit] = useState([
-        { count: 2580, title: "Product Ranges", key: "productRanges" },
-        { count: 580, title: "Years Of Legacy", key: "yearsOfLegacy" },
-        { count: 285, title: "New Customer", key: "newCustomers" },
-        { count: 6580, title: "Number Of Outlets", key: "numberOfOutlets" }
-    ]);
+    const [visionContent, setVisionContent] = useState('');
+    const [missionContent, setMissionContent] = useState('');
+    const [valuesContent, setValuesContent] = useState('');
+    // const [apisNumbersEdit, setApisNumbersEdit] = useState([
+    //     { count: 2580, title: "Product Ranges", key: "productRanges" },
+    //     { count: 580, title: "Years Of Legacy", key: "yearsOfLegacy" },
+    //     { count: 285, title: "New Customer", key: "newCustomers" },
+    //     { count: 6580, title: "Number Of Outlets", key: "numberOfOutlets" }
+    // ]);
 
     const handleEditClick = (item) => {
         setCurrentItem(item.name);
@@ -63,75 +68,82 @@ const AboutData = () => {
         setNewContent('');
     };
 
+    console.log("aboutBanner", aboutBanner);
+
     // const handleUpdate = () => {
     //     console.log(`Updated ${currentItem}: ${newContent}`);
     //     handleClose();
     // };
 
-    const handleChangeFile = (e) => {
-        setBannerImage(e.target.files[0]);
-    };
+    // const handleChangeFile = (e) => {
+    //     setBannerImage(e.target.files[0]);
+    // };
 
     const handleUpdate = async () => {
-        if (currentItem === "Banner" && bannerImage) {
+        if (currentItem === "Apis Data In Numbers") {
+            const dataToSend = apisNumbers?.map((item) => ({
+                key: item.key,
+                title: item.title,
+                count:
+                    updatedValues[item.key] !== undefined
+                        ? updatedValues[item.key]
+                        : item.count,
+            }));
+
+            try {
+                const response = await axios.put("/api/AboutUs/ApisDataNumbers", dataToSend);
+                toast.success("Successfully Updated Data");
+                console.log("API Data Updated:", response.data);
+                setApisNumbers(response.data);
+            } catch (error) {
+                console.error("Error updating API data:", error);
+                toast.error("Error updating API data");
+            }
+        } else if (currentItem === "Banner") {
             try {
                 const formData = new FormData();
                 formData.append('bannerImage', bannerImage);
+                formData.append('visibility', showHide ? "show" : "hide"); // Include visibility in the request
 
-                const response = await axios.post('/api/AboutUs/banner', formData, {
-                    headers: { "Content-Type": "multipart/form-data" },
+                const response = await axios.put("/api/AboutUs/banner", formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
                 });
 
-                console.log("Banner Updated:", response.data);
-                setAboutBanner(response.data.bannerImage);
+                if (response.data) {
+                    toast.success("Banner updated successfully");
+                    console.log("Banner updated:", response.data);
+                    // Optionally update the banner image or other states here
+                }
             } catch (error) {
                 console.error("Error updating banner:", error);
+                toast.error("Error updating banner");
             }
         }
-        else if (currentItem === "Apis Data In Numbers") {
-            // Format the updatedValues into an array
-            const dataToSend = apisNumbersEdit.map(item => ({
-                key: item.key,
-                title: item.title, // Include title
-                count: updatedValues[item.key] !== undefined ? updatedValues[item.key] : item.count // Use updated value if exists, otherwise use the current count
-            }));
+    };
 
 
-
+    const handleUpdateOurValues = async () => {
+        if (visionContent && missionContent && valuesContent) {
+            const dataToSend = { visionContent, missionContent, valuesContent };
 
             try {
-                const response = await axios.put('/api/AboutUs/ApisDataNumbers', dataToSend);
-                console.log("API Data Updated:", response.data);
-                // Optionally, refresh the state or show a success message
+                const response = await axios.put("/api/AboutUs/ourValues", dataToSend);
+                toast.success("Successfully Updated Data");
+                console.log("Data Updated:", response.data);
             } catch (error) {
-                console.error("Error updating API data:", error);
+                console.error("Error updating data:", error);
+                toast.error("Error updating data");
             }
-        }
-        else if (currentItem === "Our Directors Info") {
-            try {
-                const response = await axios.put('/api/AboutUs/OurDirectorsInfo', updatedValues);
-                console.log("response", response);
-
-            } catch (error) {
-
-            }
-        }
-        else if (currentItem === "Our Milestones") {
-            try {
-                const response = await axios.put('/api/AboutUs/ourMilestones', updatedValues);
-                console.log("response", response);
-
-            } catch (error) {
-
-            }
+        } else {
+            toast.error("Please fill out all fields.");
         }
     };
 
     const handleInputChange = (key, value) => {
         setUpdatedValues(prev => ({ ...prev, [key]: String(value) })); // Convert value to string
     };
-
-
     useEffect(() => {
         const fetchAboutBanner = async () => {
             try {
@@ -142,6 +154,7 @@ const AboutData = () => {
                 console.error("Error fetching banner:", error);
             }
         };
+        fetchAboutBanner();
 
         const getApisDataNumber = async () => {
             try {
@@ -153,7 +166,6 @@ const AboutData = () => {
             }
         };
 
-        fetchAboutBanner();
         getApisDataNumber();
     }, []);
 
@@ -205,12 +217,9 @@ const AboutData = () => {
                     {currentItem === "Banner" && (
                         <Box>
                             <Typography variant="subtitle1">Existing Banner:</Typography>
-                            {aboutBanner ? (
-                                <img src={aboutBanner} alt="Banner" width={250} height={250} />
-                            ) : (
-                                <Typography>No banner uploaded.</Typography>
-                            )}
-                            <input type="file" onChange={handleChangeFile} />
+                            <img src={aboutBanner} alt="Banner" width={250} height={250} />
+                            <input type="file" onChange={(e) => setBannerImage(e.target.files[0])} />
+
                             <FormControl sx={{ mt: 2 }}>
                                 <FormLabel>Visibility</FormLabel>
                                 <RadioGroup
@@ -227,7 +236,7 @@ const AboutData = () => {
                     {currentItem === "Apis Data In Numbers" && (
                         <Box padding={2}>
                             <Grid container spacing={2}>
-                                {apisNumbersEdit.map((itm, index) => (
+                                {apisNumbers?.length > 0 && apisNumbers?.map((itm, index) => (
                                     <Grid item md={3} xs={12} key={index}>
                                         <Card sx={{ padding: 2, height: '100%' }}>
                                             <Typography variant="h6">{itm.count}</Typography>
@@ -239,7 +248,7 @@ const AboutData = () => {
                             <Typography variant="h6" sx={{ mt: 2, mb: 2 }}>Edit Data:</Typography>
                             <Box>
 
-                                {apisNumbersEdit.map((itm) => (
+                                {apisNumbers?.map((itm) => (
                                     <TextField
                                         key={itm.key}
                                         variant="outlined"
@@ -257,6 +266,41 @@ const AboutData = () => {
                                     />
                                 ))}
                             </Box>
+                        </Box>
+                    )}
+
+                    {currentItem === "ourValues" && (
+                        <Box padding={2}>
+                            <TextField
+                                value={missionContent}
+                                onChange={(e) => setMissionContent(e.target.value)}
+                                multiline
+                                label="Enter Our Mission"
+                                fullWidth
+                                maxRows={10}
+                                style={{ marginBottom: "8px" }}
+                            />
+                            <TextField
+                                value={visionContent}
+                                onChange={(e) => setVisionContent(e.target.value)}
+                                multiline
+                                label="Enter Our Vision"
+                                fullWidth
+                                maxRows={10}
+                                style={{ marginBottom: "8px" }}
+                            />
+                            <TextField
+                                value={valuesContent}
+                                onChange={(e) => setValuesContent(e.target.value)}
+                                multiline
+                                label="Enter Our Values"
+                                fullWidth
+                                maxRows={10}
+                                style={{ marginBottom: "8px" }}
+                            />
+                            <Button onClick={()=>handleUpdateOurValues()} variant="contained" color="primary">
+                                Update
+                            </Button>
                         </Box>
                     )}
 
