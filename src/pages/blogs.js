@@ -1,3 +1,4 @@
+"use client"
 import { Box, Button, InputAdornment, Paper, TextField, Typography } from "@mui/material";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -50,6 +51,7 @@ const Blogs = () => {
     };
 
     return (
+        <>
         <Paper sx={{ p: 5 }}>
             <Typography variant="h4" gutterBottom>
                 Add New Blog
@@ -115,6 +117,7 @@ const Blogs = () => {
                 Add Blog
             </Button>
         </Paper>
+        </>
     );
 };
 
