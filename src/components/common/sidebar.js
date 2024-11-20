@@ -11,6 +11,7 @@ import {
   Box,
   IconButton,
 } from '@mui/material';
+import Logo from '../../../public/logo.png'
 import {
   Dashboard as DashboardIcon,
   Home as HomeIcon,
@@ -29,6 +30,7 @@ import {
 import StayCurrentPortraitIcon from '@mui/icons-material/StayCurrentPortrait';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountMenu from './adminProfile';
+import Image from 'next/image';
 
 const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, link: '/dashboard' },
@@ -71,12 +73,14 @@ const Sidebar = () => {
       variant="permanent"
       anchor="left"
     >
+      <Image src={Logo} height={140} width={140}/>
       {/* Toggle Button */}
       <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
         <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
           {isCollapsed ? <MenuIcon sx={{ color: '#333' }} /> : <ArrowForwardIcon sx={{ color: '#333' }} />}
         </IconButton>
       </Box>
+
       <Divider />
 
       {/* Sidebar Items */}

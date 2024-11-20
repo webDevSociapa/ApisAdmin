@@ -2,11 +2,15 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconBut
 import CloseIcon from '@mui/icons-material/Close';
 
 import { useState } from "react";
+import axios from "axios";
 
 const Media = () => {
     const [open, setOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState('');
     const [newContent, setNewContent] = useState('');
+    const [mediaGellery, setMediaGellery] = useState(null);
+    const [title, setTitle] = useState("");
+    const [videoUrl, setVideoUrl] = useState("")
 
     const handleEditClick = (item) => {
         setCurrentItem(item.name);
@@ -29,6 +33,49 @@ const Media = () => {
         { name: "TVC" },
         { name: "Our Campaigns" },
     ]
+
+    const handleAddData = async () => {
+        try {
+            let response;
+
+            if (currentItem === "Media Gallery") {
+                if (!mediaGellery || !title) {
+                    console.error("Please provide both media gallery file and title.");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("mediaGallery", mediaGellery);
+                formData.append("title", title);
+
+                response = await axios.post("/api/mediaGallery", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+            } else if (currentItem === "TVC") {
+                if (!videoUrl) {
+                    console.error("Please provide a valid TVC video link.");
+                    return;
+                }
+
+                response = await axios.post("/api/mediaTvc", { videoUrl }, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+            }
+
+            if (response && response.status === 200) {
+                console.log("Operation successful:", response.data);
+            } else {
+                console.error("Unexpected response status:", response?.status);
+            }
+        } catch (error) {
+            console.error("Error during operation:", error);
+        }
+    };
+
 
     return (
         <>
@@ -109,52 +156,50 @@ const Media = () => {
                     )}
 
                     {currentItem === "Media Gallery" && (
-                        <>
-                            <TextField
-                                variant="outlined"
-                                fullWidth
-                                label="Update Name of event"
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Button variant="contained">Add</Button>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{ mb: 2 }}
+                <>
+                    <TextField
+                        variant="outlined"
+                        fullWidth
+                        label="Media Gallery Title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <input
+                        type="file"
+                        onChange={(e) => setMediaGellery(e.target.files[0])}
+                        sx={{ mb: 2 }}
+                    />
+                    <Button
+                        variant="contained"
+                        onClick={handleAddData}
+                        sx={{ mt: 2 }}
+                    >
+                        Upload
+                    </Button>
+                </>
+            )}
 
-                            />
-                            <Box>
-                                <Typography variant="subtitle1">Existing Banner:</Typography>
-                                {/* Render a list of existing logos (placeholder) */}
-                                <Box display="flex" gap={2} mt={2}>
-                                    <img src="/logo1.png" alt="Logo 1" width={50} />
-                                    {/* Add more logos as needed */}
-                                </Box>
-                                <Button variant="contained" component="label" sx={{ mt: 2 }}>
-                                    Upload New Banner
-                                    <input type="file" hidden onChange={(e) => console.log(e.target.files)} />
-                                </Button>
-                            </Box>
-                        </>
-                    )}
-                    {currentItem === "TVC" && (
-                        <TextField
-                            variant="outlined"
-                            fullWidth
-                            label="Add TVC Link here :"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <Button variant="contained">Add</Button>
-                                    </InputAdornment>
-                                ),
-                            }}
-                            sx={{ mb: 2 }}
-
-                        />
-
-                    )}
+            {/* TVC Section */}
+            {currentItem === "TVC" && (
+                <>
+                    <TextField
+                        variant="outlined"
+                        fullWidth
+                        label="Add TVC Link here :"
+                        value={videoUrl}
+                        onChange={(e) => setVideoUrl(e.target.value)}
+                        sx={{ mb: 2 }}
+                    />
+                    <Button
+                        variant="contained"
+                        onClick={handleAddData}
+                        sx={{ mt: 2 }}
+                    >
+                        Add
+                    </Button>
+                </>
+            )}
                     {currentItem === "Our Campaigns" && (
 
                         <>

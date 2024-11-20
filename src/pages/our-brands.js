@@ -44,6 +44,7 @@ export default function BasicTabs() {
     const [currentItem, setCurrentItem] = React.useState('');
     const [newContent, setNewContent] = React.useState('');
     const [isCollapsedMenu, setIsCollapsedMenu] = React.useState(false)
+    const [productBanner,setProductBanner] = React.useState(null)
 
 
 
@@ -182,6 +183,16 @@ export default function BasicTabs() {
             reader.readAsDataURL(file);
         }
     };
+
+
+    const handleProductBanner = async() =>{
+        try {
+            const response = await axios.put("/api/our-brands/")
+        } catch (error) {
+            
+        }
+    }
+
     // const handk
 
     return (
@@ -429,9 +440,9 @@ export default function BasicTabs() {
                             </Box>
                             <Button variant="contained" component="label" sx={{ mt: 2 }}>
                                 Change Banner
-                                <input type="file" hidden onChange={(e) => console.log(e.target.files)} />
+                                <input type="file" hidden onChange={(e) =>setProductBanner(e.target.files)} />
                             </Button>
-                            <Box mt={2}>
+                            {/* <Box mt={2}>
                                 <Typography variant="subtitle2">Status:</Typography>
                                 <Button
                                     variant="contained"
@@ -440,11 +451,27 @@ export default function BasicTabs() {
                                 >
                                     Toggle Visibility
                                 </Button>
-                            </Box>
+                            </Box> */}
                         </Box>
                     )}
 
-                    {["Headline", "Change Banner Text"].includes(currentItem) && (
+                    <TextField
+                    label="Product Name" 
+                    multiline
+                    maxRows={10}
+                    style={{marginTop:"10px"}}
+                    fullWidth
+                    ></TextField>
+
+                    <TextField
+                    label="Product Info" 
+                    multiline
+                    maxRows={10}
+                    style={{marginTop:"10px"}}
+                    fullWidth
+                    ></TextField>
+
+                    {/* {["Headline", "Change Banner Text"].includes(currentItem) && (
                         <TextareaAutosize
                             minRows={3}
                             placeholder={`Edit ${currentItem}`}
@@ -452,9 +479,9 @@ export default function BasicTabs() {
                             onChange={(e) => setNewContent(e.target.value)}
                             style={{ width: '100%' }} // Set width to your desired value
                             sx={{ mt: 2, width: '100%' }} // Or adjust as needed
-                        />
+                        /> */}
 
-                    )}
+                    {/* )} */}
                 </DialogContent>
                 {currentItem !== "Remove Product" ? <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
