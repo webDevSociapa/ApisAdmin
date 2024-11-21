@@ -18,7 +18,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CloseIcon from "@mui/icons-material/Close";
 
-axios.defaults.baseURL = "http://localhost:3000";
 
 const Home = () => {
   const HomeContent = [
