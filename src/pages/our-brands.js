@@ -43,8 +43,9 @@ export default function BasicTabs() {
     const [open, setOpen] = React.useState(false);
     const [currentItem, setCurrentItem] = React.useState('');
     const [newContent, setNewContent] = React.useState('');
-    const [isCollapsedMenu, setIsCollapsedMenu] = React.useState(false)
-    const [productBanner,setProductBanner] = React.useState(null)
+    const [isCollapsedMenu, setIsCollapsedMenu] = React.useState(false);
+    const [productBanner, setProductBanner] = React.useState(null);
+    const [productImage, setProductImage] = React.useState(null);
 
 
 
@@ -168,6 +169,9 @@ export default function BasicTabs() {
     ]
 
     const [uploadedImage, setUploadedImage] = React.useState(null);
+    const [productBannerImages, setProductBannerImages] = React.useState(null);
+    const [imagePreviewUrl, setImagePreviewUrl] = React.useState('');
+
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -185,14 +189,52 @@ export default function BasicTabs() {
     };
 
 
-    const handleProductBanner = async() =>{
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setProductBannerImages(file);
+
+        if (file) {
+            console.log("file", URL.createObjectURL(file));
+
+            const previewUrl = URL.createObjectURL(file);
+            setImagePreviewUrl(previewUrl);
+        }
+    };
+
+
+    const handleProductBanner = async () => {
         try {
             const response = await axios.put("/api/our-brands/")
         } catch (error) {
-            
+
         }
     }
 
+    const EditProductDetails = async () => {
+        try {
+            const response = await axios.post("/api/our-Brands/products/banner",)
+            console.log("response", response);
+
+        } catch (error) {
+            console.log("ststats");
+
+
+        }
+
+    }
+
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get("/api/our-Brands/products/banner");
+                console.log(response);
+            } catch (error) {
+                console.log("erorr", error);
+
+            }
+        }
+    }, [])
     // const handk
 
     return (
@@ -226,6 +268,32 @@ export default function BasicTabs() {
                     <CloseIcon />
                 </IconButton>
                 <DialogContent dividers>
+                    {currentItem === "Banner" && (
+                        <>
+                            <input type="file" onChange={handleFileChange} />
+                            <TextField
+                                label="Product Name"
+                                multiline
+                                maxRows={10}
+                                onChange={(e)=>setProductName(e.target.value)}
+                                style={{ marginTop: "10px" }}
+                                fullWidth
+                            ></TextField>
+
+                            {imagePreviewUrl && (
+                                <img src={imagePreviewUrl} alt="Preview" style={{ marginTop: "10px", maxWidth: "100%", height: "auto" }} />
+                            )}
+
+                            <TextField
+                                label="Product Info"
+                                multiline
+                                maxRows={10}
+                                onChange={(e)=>setProductInfo(e.target.value)}
+                                style={{ marginTop: "10px" }}
+                                fullWidth
+                            ></TextField>
+                        </>
+                    )}
                     {currentItem === "Our Availability" && (
                         <Box>
                             <Typography variant="subtitle1">Existing Logos:</Typography>
@@ -352,9 +420,10 @@ export default function BasicTabs() {
                     {currentItem === "Related Recipes" && (
                         <Box>
                             <TextField
-                                variant="outlined"
+                                variant="contained"
                                 fullWidth
                                 label="add new recipies link :"
+                                style={{ background: "#9F7B49" }}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
@@ -411,9 +480,9 @@ export default function BasicTabs() {
                     )}
                     {currentItem === "Remove Product" && (
                         <>
-                           <Typography style={{ lineHeight: '1.5', maxHeight: '6em', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: '5', WebkitBoxOrient: 'vertical' }}>
-    Please be aware that selecting this option will permanently delete this product from our brand list and website. This action cannot be undone, and all associated data will be lost. Ensure that you want to proceed before confirming this deletion.
-</Typography>
+                            <Typography style={{ lineHeight: '1.5', maxHeight: '6em', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: '5', WebkitBoxOrient: 'vertical' }}>
+                                Please be aware that selecting this option will permanently delete this product from our brand list and website. This action cannot be undone, and all associated data will be lost. Ensure that you want to proceed before confirming this deletion.
+                            </Typography>
                             <Box style={{ display: "flex", justifyContent: "center", padding: "20px", margin: "0px 20px" }}>
                                 <Button onClick={handleClose} style={{ color: "#9F7B49" }} >Cancel</Button>
                                 <Button onClick={handleUpdate} style={{ background: "#9F7B49", color: "#fff" }} >Remove</Button>
@@ -431,45 +500,8 @@ export default function BasicTabs() {
                             defaultValue="Default Value"
                         />
                     )}
-                    {currentItem === "Banner" && (
-                        <Box>
-                            <Typography variant="subtitle1">Current Banner:</Typography>
-                            {/* Placeholder banner image */}
-                            <Box mt={2}>
-                                <img src="/banner.png" alt="Current Banner" width="100%" />
-                            </Box>
-                            <Button variant="contained" component="label" sx={{ mt: 2 }}>
-                                Change Banner
-                                <input type="file" hidden onChange={(e) =>setProductBanner(e.target.files)} />
-                            </Button>
-                            {/* <Box mt={2}>
-                                <Typography variant="subtitle2">Status:</Typography>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => console.log("Show/Hide Banner")}
-                                >
-                                    Toggle Visibility
-                                </Button>
-                            </Box> */}
-                        </Box>
-                    )}
 
-                    <TextField
-                    label="Product Name" 
-                    multiline
-                    maxRows={10}
-                    style={{marginTop:"10px"}}
-                    fullWidth
-                    ></TextField>
 
-                    <TextField
-                    label="Product Info" 
-                    multiline
-                    maxRows={10}
-                    style={{marginTop:"10px"}}
-                    fullWidth
-                    ></TextField>
 
                     {/* {["Headline", "Change Banner Text"].includes(currentItem) && (
                         <TextareaAutosize

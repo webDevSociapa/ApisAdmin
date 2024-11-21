@@ -11,6 +11,7 @@ const Careers = () => {
   const [newContent, setNewContent] = useState('');
   const [apisLife, setApisLife] = useState([]);
   const [getApisLifeData, setGetApisLifeData] = useState([]);
+  const [title,setTitle] = useState("")
   const [titleImage, setTitleImage] = useState(null);
   const [imageGroup, setImageGroup] = useState([]);
   const [type, setType] = useState('');
@@ -53,29 +54,36 @@ const Careers = () => {
     setTitleImage(e.target.files[0]);
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (item) => {
+    console.log("Updating item:", item.target.value);
+    
     try {
-      const formData = new FormData();
-      formData.append('title', currentItem); // Assuming title is the currentItem
-      if (titleImage) {
-        formData.append('titleImage', titleImage);
-      }
-      imageGroup.forEach((image) => {
-        formData.append('imageGroup', image);
-      });
-      formData.append('type', type); // Set this if you have a value for type
+        const formData = new FormData();
+        formData.append('id', item._id); // Add the ID of the item to update
+        formData.append('title', currentItem); // Assuming title is the currentItem
 
-      const response = await axios.put("/api/careers/apisLife", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+        if (titleImage) {
+            formData.append('titleImage', titleImage);
+        }
+        
+        imageGroup.forEach((image) => {
+            formData.append('imageGroup', image);
+        });
+        
+        formData.append('type', type); // Set this if you have a value for type
 
-      toast.success("Update successful!"); // Notify on success
-      handleClose(); // Close the dialog after successful update
+        const response = await axios.put("/api/careers/apisLife", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        console.log("Update response:", response);
+        toast.success("Update successful!"); // Notify on success
+        handleClose(); // Close the dialog after successful update
     } catch (error) {
-      toast.error("Update failed!"); // Notify on error
-      console.error(error);
+        toast.error("Update failed!"); // Notify on error
+        console.error("Update error:", error);
     }
-  };
+};
 
   const handleAddJob = async () => {
     try {
@@ -90,7 +98,7 @@ const Careers = () => {
 
   const handleAddApisLife = async () => {
     try {
-      const response = await axios.post("/api/careers/apisLife", jobDetails); // Example API endpoint
+      const response = await axios.post("/api/careers/apisLife", ); // Example API endpoint
       toast.success("Job added successfully!");
       handleAddJobClose();
     } catch (error) {
@@ -162,41 +170,46 @@ const Careers = () => {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-          {["Employee Awards", "Engagements", "Training & Sessions", "Celebrations"].includes(currentItem) && (
-            <>
-              <Box sx={{ marginBottom: "10px" }}>
-                <Typography variant="subtitle1">Current Data:</Typography>
+        {/* <DialogContent dividers> */}
+    {["Employee Awards", "Engagements", "Training & Sessions", "Celebrations"].includes(currentItem) && (
+        <Box sx={{ marginBottom: "10px" }}>
+            <Typography variant="subtitle1">Current Data:</Typography>
 
-                {getApisLifeData.map((item) => (
-                  <Box key={item._id} sx={{ marginBottom: "20px", border: "1px solid #ccc", padding: "10px", borderRadius: "5px" }}>
+            {getApisLifeData.length > 0 ? getApisLifeData.map((item) => (
+                <Box key={item._id} sx={{ marginBottom: "20px", border: "1px solid #ccc", padding: "10px", borderRadius: "5px" }}>
                     <Typography variant="h6">{item.title}</Typography>
                     <Box sx={{ mb: 2 }}>
-                      <img src={item.titleImage} alt="Current Banner" width="100px" style={{ display: "block" }} />
-                      <p>Change new Image Below</p>
-                      <input type="file" onChange={(e) => fileUpload(e)} />
+                        <img src={item.titleImage} alt="Current Banner" width="100px" style={{ display: "block" }} />
+                        <p>Change new Image Below</p>
+                        <input type="file" onChange={(e) => setTitleImage(e.target.files[0])} />
+                        <Typography>
+                            <TextField
+                                label="Title"
+                                size="small"
+                                value={title}
+                                style={{ marginTop: "20px" }}
+                                onChange={(e) => setTitle(e.target.value)}
+                            />
+                            <TextField
+                                label="Type"
+                                size="small"
+                                style={{ marginTop: "20px" }}
+                                onChange={(e) => setType(e.target.value)} // Ensure to set type correctly
+                            />
+                        </Typography>
+                        <Button variant="contained" style={{ marginTop: "5px", background: "#9F7B49" }} onClick={() => handleUpdate(item)}>Edit</Button>
                     </Box>
                     <Box sx={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                      {item.imageGroup.map((image, index) => (
-                        <img key={index} src={image} alt={`Gallery Image ${index + 1}`} width="100px" style={{ display: "block" }} />
-                      ))}
+                        {item.imageGroup.map((image, index) => (
+                            <img key={index} src={image} alt={`Gallery Image ${index + 1}`} width="100px" style={{ display: "block" }} />
+                        ))}
                     </Box>
                     <input type="file" onChange={(e) => console.log(e.target.files)} />
                     <p>Add new Image Below</p>
-                  </Box>
-                ))}
-
-                <Box mt={2}>
-                  <input type="file" onChange={(e) => console.log(e.target.files)} />
-                  <img src="/banner.png" alt="Current Banner" width="100%" />
                 </Box>
-
-                <Box sx={{ display: "flex", gap: "2" }}>
-                  <input type="file" onChange={(e) => console.log(e.target.files)} />
-                </Box>
-              </Box>
-             
-            </>
-          )}
+            )) : "Updating Data Wait....."}
+        </Box>
+    )}
           {currentItem === "Join Us" && (
             <DialogContent dividers>
               <>
