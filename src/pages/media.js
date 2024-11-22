@@ -1,51 +1,46 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, TextField, Typography } from "@mui/material"
-import CloseIcon from '@mui/icons-material/Close';
-
 import { useState } from "react";
 import axios from "axios";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 
 const Media = () => {
     const [open, setOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState('');
-    const [newContent, setNewContent] = useState('');
-    const [mediaGellery, setMediaGellery] = useState(null);
+    const [mediaImage, setMediaImage] = useState(null);
     const [title, setTitle] = useState("");
-    const [videoUrl, setVideoUrl] = useState("")
+    const [videoUrl, setVideoUrl] = useState("");
 
     const handleEditClick = (item) => {
         setCurrentItem(item.name);
         setOpen(true);
-        setNewContent('');
     };
 
     const handleClose = () => {
         setOpen(false);
-        setNewContent('');
+        setTitle("");
+        setMediaImage(null);
+        setVideoUrl("");
     };
 
-    const handleUpdate = () => {
-        console.log(`Updated ${currentItem}: ${newContent}`);
-        handleClose();
-    };
     const DataSet = [
         { name: "Apis In The News" },
         { name: "Media Gallery" },
         { name: "TVC" },
         { name: "Our Campaigns" },
-    ]
+    ];
 
     const handleAddData = async () => {
         try {
             let response;
 
             if (currentItem === "Media Gallery") {
-                if (!mediaGellery || !title) {
-                    console.error("Please provide both media gallery file and title.");
+                if (!mediaImage || !title) {
+                    console.error("Please provide both media image and title.");
                     return;
                 }
 
                 const formData = new FormData();
-                formData.append("mediaGallery", mediaGellery);
+                formData.append("mediaImage", mediaImage);
                 formData.append("title", title);
 
                 response = await axios.post("/api/mediaGallery", formData, {
@@ -59,7 +54,7 @@ const Media = () => {
                     return;
                 }
 
-                response = await axios.post("/api/mediaTvc", { videoUrl }, {
+                response = await axios.post("/api/mediaGallery/mediaTvc", { videoUrl }, {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -68,6 +63,7 @@ const Media = () => {
 
             if (response && response.status === 200) {
                 console.log("Operation successful:", response.data);
+                handleClose();
             } else {
                 console.error("Unexpected response status:", response?.status);
             }
@@ -75,7 +71,6 @@ const Media = () => {
             console.error("Error during operation:", error);
         }
     };
-
 
     return (
         <>
@@ -92,7 +87,8 @@ const Media = () => {
                         fontWeight: "400",
                         display: "flex",
                         justifyContent: "space-between",
-                    }} style={{ Padding: "20px 60px" }}
+                    }}
+                    style={{ padding: "20px 60px" }}
                 >
                     <span>{itm.name}</span>
                     <span
@@ -120,7 +116,6 @@ const Media = () => {
                     <CloseIcon />
                 </IconButton>
                 <DialogContent dividers>
-
                     {currentItem === "Apis In The News" && (
                         <>
                             <TextField
@@ -135,9 +130,7 @@ const Media = () => {
                                     ),
                                 }}
                                 sx={{ mb: 2 }}
-
                             />
-                            <br />
                             <TextField
                                 variant="outlined"
                                 fullWidth
@@ -149,59 +142,56 @@ const Media = () => {
                                         </InputAdornment>
                                     ),
                                 }}
-
                             />
-
                         </>
                     )}
 
                     {currentItem === "Media Gallery" && (
-                <>
-                    <TextField
-                        variant="outlined"
-                        fullWidth
-                        label="Media Gallery Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        sx={{ mb: 2 }}
-                    />
-                    <input
-                        type="file"
-                        onChange={(e) => setMediaGellery(e.target.files[0])}
-                        sx={{ mb: 2 }}
-                    />
-                    <Button
-                        variant="contained"
-                        onClick={handleAddData}
-                        sx={{ mt: 2 }}
-                    >
-                        Upload
-                    </Button>
-                </>
-            )}
+                        <>
+                            <TextField
+                                variant="outlined"
+                                fullWidth
+                                label="Media Gallery Title"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                sx={{ mb: 2 }}
+                            />
+                            <input
+                                type="file"
+                                onChange={(e) => setMediaImage(e.target.files[0])}
+                                sx={{ mb: 2 }}
+                            />
+                            <Button
+                                variant="contained"
+                                onClick={handleAddData}
+                                sx={{ mt: 2 }}
+                            >
+                                Upload
+                            </Button>
+                        </>
+                    )}
 
-            {/* TVC Section */}
-            {currentItem === "TVC" && (
-                <>
-                    <TextField
-                        variant="outlined"
-                        fullWidth
-                        label="Add TVC Link here :"
-                        value={videoUrl}
-                        onChange={(e) => setVideoUrl(e.target.value)}
-                        sx={{ mb: 2 }}
-                    />
-                    <Button
-                        variant="contained"
-                        onClick={handleAddData}
-                        sx={{ mt: 2 }}
-                    >
-                        Add
-                    </Button>
-                </>
-            )}
+                    {currentItem === "TVC" && (
+                        <>
+                            <TextField
+                                variant="outlined"
+                                fullWidth
+                                label="Add TVC Link here :"
+                                value={videoUrl}
+                                onChange={(e) => setVideoUrl(e.target.value)}
+                                sx={{ mb: 2 }}
+                            />
+                            <Button
+                                variant="contained"
+                                onClick={handleAddData}
+                                sx={{ mt: 2 }}
+                            >
+                                Add
+                            </Button>
+                        </>
+                    )}
+
                     {currentItem === "Our Campaigns" && (
-
                         <>
                             <TextField
                                 variant="outlined"
@@ -215,11 +205,9 @@ const Media = () => {
                                     ),
                                 }}
                                 sx={{ mb: 2 }}
-
                             />
                             <Box>
                                 <Typography variant="subtitle1">Current Banner:</Typography>
-                                {/* Placeholder banner image */}
                                 <Box mt={2}>
                                     <img src="/banner.png" alt="Current Banner" width="100%" />
                                 </Box>
@@ -227,21 +215,18 @@ const Media = () => {
                                     Change Banner
                                     <input type="file" hidden onChange={(e) => console.log(e.target.files)} />
                                 </Button>
-
                             </Box>
                         </>
                     )}
-
-
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleUpdate}>Update</Button>
+                    <Button onClick={handleAddData}>Update</Button>
                 </DialogActions>
             </Dialog>
         </>
-    )
-}
+    );
+};
 
-export default Media
+export default Media;
 

@@ -1,6 +1,6 @@
 "use client"
 import { Box, Button, InputAdornment, Paper, TextField, Typography } from "@mui/material";
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+// import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -50,11 +50,11 @@ const Blogs = () => {
             formData.append("contentData", blogData.contentData);
             formData.append("desc", blogData.desc);
             formData.append("blogDate", blogData.blogDate);
-    
+
             if (selectedBlogId) {
                 // Include the ID in the request body for updating
                 formData.append("id", selectedBlogId);
-    
+
                 // Update blog
                 await axios.put("/api/blogs", formData, {
                     headers: {
@@ -75,7 +75,7 @@ const Blogs = () => {
                 });
                 setBlogs([...blogs, response.data]);
             }
-    
+
             // Reset form
             setBlogData({
                 blogTitle: "",
@@ -89,7 +89,7 @@ const Blogs = () => {
             console.error("Error while adding/updating blog:", error);
         }
     };
-    
+
 
     const handleEdit = (blog) => {
         setSelectedBlogId(blog._id);
@@ -108,7 +108,7 @@ const Blogs = () => {
                 <Typography variant="h4" gutterBottom>
                     {selectedBlogId ? "Edit Blog" : "Add New Blog"}
                 </Typography>
-                
+
                 <TextField
                     variant="outlined"
                     label="Blog Title"
@@ -117,7 +117,7 @@ const Blogs = () => {
                     fullWidth
                     sx={{ mt: 2, mb: 2 }}
                 />
-                
+
                 <Box sx={{ mb: 4 }}>
                     <Typography variant="subtitle1">Blog Image:</Typography>
                     <Box mt={2}>
@@ -133,7 +133,11 @@ const Blogs = () => {
                     </Button>
                 </Box>
 
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <TextField
+
+                />
+
+                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DatePicker']}>
                         <DatePicker
                             label="Blog Date"
@@ -141,7 +145,7 @@ const Blogs = () => {
                             onChange={(newValue) => handleChange("blogDate", newValue)}
                         />
                     </DemoContainer>
-                </LocalizationProvider>
+                </LocalizationProvider> */}
 
                 <TextField
                     variant="outlined"

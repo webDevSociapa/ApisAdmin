@@ -51,6 +51,9 @@ const AboutData = () => {
     const [visionContent, setVisionContent] = useState('');
     const [missionContent, setMissionContent] = useState('');
     const [valuesContent, setValuesContent] = useState('');
+    const [ourValues,setOurValues] = useState([])
+    const [currentItemId, setCurrentItemId] = useState(null); // Store the ID of the item being edited
+
     // const [apisNumbersEdit, setApisNumbersEdit] = useState([
     //     { count: 2580, title: "Product Ranges", key: "productRanges" },
     //     { count: 580, title: "Years Of Legacy", key: "yearsOfLegacy" },
@@ -70,64 +73,19 @@ const AboutData = () => {
 
     console.log("aboutBanner", aboutBanner);
 
-    // const handleUpdate = () => {
-    //     console.log(`Updated ${currentItem}: ${newContent}`);
-    //     handleClose();
-    // };
+    const handleUpdate = () => {
+        console.log(`Updated ${currentItem}: ${newContent}`);
+        handleClose();
+    };
 
     // const handleChangeFile = (e) => {
     //     setBannerImage(e.target.files[0]);
     // };
 
-    const handleUpdate = async () => {
-        if (currentItem === "Apis Data In Numbers") {
-            const dataToSend = apisNumbers?.map((item) => ({
-                key: item.key,
-                title: item.title,
-                count:
-                    updatedValues[item.key] !== undefined
-                        ? updatedValues[item.key]
-                        : item.count,
-            }));
-
-            try {
-                const response = await axios.put("/api/AboutUs/ApisDataNumbers", dataToSend);
-                toast.success("Successfully Updated Data");
-                console.log("API Data Updated:", response.data);
-                setApisNumbers(response.data);
-            } catch (error) {
-                console.error("Error updating API data:", error);
-                toast.error("Error updating API data");
-            }
-        } else if (currentItem === "Banner") {
-            try {
-                const formData = new FormData();
-                formData.append('bannerImage', bannerImage);
-                formData.append('visibility', showHide ? "show" : "hide"); // Include visibility in the request
-
-                const response = await axios.put("/api/AboutUs/banner", formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-
-                if (response.data) {
-                    toast.success("Banner updated successfully");
-                    console.log("Banner updated:", response.data);
-                    // Optionally update the banner image or other states here
-                }
-            } catch (error) {
-                console.error("Error updating banner:", error);
-                toast.error("Error updating banner");
-            }
-        }
-    };
-
-
     const handleUpdateOurValues = async () => {
-        if (visionContent && missionContent && valuesContent) {
-            const dataToSend = { visionContent, missionContent, valuesContent };
-
+        if (visionContent && missionContent && valuesContent && currentItemId) {
+            const dataToSend = { visionContent, missionContent, valuesContent, id: currentItemId };
+    
             try {
                 const response = await axios.put("/api/AboutUs/ourValues", dataToSend);
                 toast.success("Successfully Updated Data");
@@ -140,6 +98,17 @@ const AboutData = () => {
             toast.error("Please fill out all fields.");
         }
     };
+    
+    const handleEdit = (item) => {
+        setMissionContent(item.missionContent);
+        setVisionContent(item.visionContent);
+        setValuesContent(item.valuesContent);
+        setCurrentItemId(item._id); // Assuming item has an _id field
+    };
+
+
+
+
 
     const handleInputChange = (key, value) => {
         setUpdatedValues(prev => ({ ...prev, [key]: String(value) })); // Convert value to string
@@ -167,6 +136,17 @@ const AboutData = () => {
         };
 
         getApisDataNumber();
+        const fetchOurValues = async () => {
+            try {
+                const response = await axios.get('/api/AboutUs/ourValues');
+                setOurValues(response.data)
+                console.log("Fetched Apis Data Numbers:", response.data);
+            } catch (error) {
+                console.error("Error fetching Apis Data Numbers:", error);
+            }
+        };
+
+        fetchOurValues();
     }, []);
 
     return (
@@ -269,40 +249,73 @@ const AboutData = () => {
                         </Box>
                     )}
 
-                    {currentItem === "ourValues" && (
-                        <Box padding={2}>
-                            <TextField
-                                value={missionContent}
-                                onChange={(e) => setMissionContent(e.target.value)}
-                                multiline
-                                label="Enter Our Mission"
-                                fullWidth
-                                maxRows={10}
-                                style={{ marginBottom: "8px" }}
-                            />
-                            <TextField
-                                value={visionContent}
-                                onChange={(e) => setVisionContent(e.target.value)}
-                                multiline
-                                label="Enter Our Vision"
-                                fullWidth
-                                maxRows={10}
-                                style={{ marginBottom: "8px" }}
-                            />
-                            <TextField
-                                value={valuesContent}
-                                onChange={(e) => setValuesContent(e.target.value)}
-                                multiline
-                                label="Enter Our Values"
-                                fullWidth
-                                maxRows={10}
-                                style={{ marginBottom: "8px" }}
-                            />
-                            <Button onClick={()=>handleUpdateOurValues()} variant="contained" color="primary">
-                                Update
+                    
+
+{currentItem === "ourValues" && (
+            <>
+                <Box padding={2}>
+                    <TextField
+                        value={missionContent}
+                        onChange={(e) => setMissionContent(e.target.value)}
+                        multiline
+                        label="Enter Our Mission"
+                        fullWidth
+                        maxRows={10}
+                        style={{ marginBottom: "8px" }}
+                    />
+                    <TextField
+                        value={visionContent}
+                        onChange={(e) => setVisionContent(e.target.value)}
+                        multiline
+                        label="Enter Our Vision"
+                        fullWidth
+                        maxRows={10}
+                        style={{ marginBottom: "8px" }}
+                    />
+                    <TextField
+                        value={valuesContent}
+                        onChange={(e) => setValuesContent(e.target.value)}
+                        multiline
+                        label="Enter Our Values"
+                        fullWidth
+                        maxRows={10}
+                        style={{ marginBottom: "8px" }}
+                    />
+                    <Button onClick={handleUpdateOurValues} variant="contained" color="primary">
+                        Update
+                    </Button>
+                </Box>
+                <Box>
+                    {ourValues.map((item) => (
+                        <Box
+                            key={item.id}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                mb: 2,
+                                border: "1px solid #ccc",
+                                padding: "8px",
+                                borderRadius: "4px",
+                            }}
+                        >
+                            <Box>
+                                <p><strong>Vision:</strong> {item.visionContent}</p>
+                                <p><strong>Mission:</strong> {item.missionContent}</p>
+                                <p><strong>Values:</strong> {item.valuesContent}</p>
+                            </Box>
+                            <Button
+                                onClick={() => handleEdit(item)}
+                                variant="outlined"
+                                color="secondary"
+                            >
+                                Edit
                             </Button>
                         </Box>
-                    )}
+                    ))}
+                </Box>
+            </>
+        )}
 
                     {currentItem === "Our Directors Info" && (
                         <Box>
