@@ -18,10 +18,15 @@ import {
     FormControlLabel,
     FormLabel,
     RadioGroup,
+    Paper,
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
 import { toast } from "react-toastify";
+
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 
 const AboutData = () => {
     const AboutData = [
@@ -42,7 +47,7 @@ const AboutData = () => {
     const [open, setOpen] = useState(false);
     const [currentItem, setCurrentItem] = useState('');
     const [newContent, setNewContent] = useState('');
-    const [aboutBanner, setAboutBanner] = useState('')
+    const [aboutBanner, setAboutBanner] = useState(null)
     const [editBanner, setEditBanner] = useState([])
     const [bannerImage, setBannerImage] = useState(null)
     const [showHide, setShowHide] = useState(true)
@@ -52,7 +57,10 @@ const AboutData = () => {
     const [missionContent, setMissionContent] = useState('');
     const [valuesContent, setValuesContent] = useState('');
     const [ourValues,setOurValues] = useState([])
+    const [ourDirectors, setOurDirectors] = useState([])
     const [currentItemId, setCurrentItemId] = useState(null); // Store the ID of the item being edited
+    const [personDetails, setPersonDetails] = useState([]);
+  const [loading, setLoading] = useState(false);
 
     // const [apisNumbersEdit, setApisNumbersEdit] = useState([
     //     { count: 2580, title: "Product Ranges", key: "productRanges" },
@@ -78,6 +86,51 @@ const AboutData = () => {
         handleClose();
     };
 
+    const handleEdit = async (personId) => {
+        const person = personDetails.find((p) => p.id === personId);
+    
+        if (!person.name || !person.designation || !person.description) {
+          alert("Please fill out all fields before updating.");
+          return;
+        }
+    
+        const formData = new FormData();
+        formData.append("id", personId);
+        formData.append("person[Name]", person.name);
+        formData.append("person[Designation]", person.designation);
+        formData.append("person[Description]", person.description);
+        if (person.image) {
+          formData.append("bannerImage", person.image);
+        }
+    
+        try {
+          const response = await axios.put("/api/ourDirectors", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+          if (response.status === 200) {
+            alert("Details updated successfully!");
+            fetchDirectors(); // Refresh data after update
+          }
+        } catch (error) {
+          console.error(error);
+          alert("Failed to update details. Please try again.");
+        }
+      };
+    
+      // Handle Change in Input Fields
+      const handleChange = (e, personId, field) => {
+        const updatedDetails = personDetails?.map((person) => {
+          if (person.id === personId) {
+            if (field === "image") {
+              return { ...person, [field]: e.target.files[0] };
+            }
+            return { ...person, [field]: e.target.value };
+          }
+          return person;
+        });
+        setPersonDetails(updatedDetails);
+      };
+
     // const handleChangeFile = (e) => {
     //     setBannerImage(e.target.files[0]);
     // };
@@ -99,12 +152,27 @@ const AboutData = () => {
         }
     };
     
-    const handleEdit = (item) => {
-        setMissionContent(item.missionContent);
-        setVisionContent(item.visionContent);
-        setValuesContent(item.valuesContent);
-        setCurrentItemId(item._id); // Assuming item has an _id field
-    };
+    // const handleEdit = (item) => {
+    //     setMissionContent(item.missionContent);
+    //     setVisionContent(item.visionContent);
+    //     setValuesContent(item.valuesContent);
+    //     setCurrentItemId(item._id); // Assuming item has an _id field
+    // };
+
+
+    const handleAddData = async() =>{
+        try {
+            const formData = new FormData();
+            formData.append('bannerImage',bannerImage)
+            const response = await axios.post("/api/AboutUs/banner", formData,{
+                headers:{
+                    'Content-Type': 'multipart/form-data',
+                }
+            })
+        } catch (error) {
+            
+        }
+    }
 
 
 
@@ -147,10 +215,24 @@ const AboutData = () => {
         };
 
         fetchOurValues();
+        const fetchDirectors = async () => {
+            try {
+                const response = await axios.get('/api/AboutUs/ourDirectors');
+                console.log("response",response);
+                
+                setPersonDetails(response.data.data)
+                console.log("Fetched Apis Data Numbers:", response.data);
+            } catch (error) {
+                console.error("Error fetching Apis Data Numbers:", error);
+            }
+        };
+
+        fetchDirectors();
     }, []);
 
     return (
-        <div>
+        <Paper sx={{ p: 5, background: "rgba(255, 251, 246, 1)" }}>
+            <div>
             {AboutData.map((itm, index) => (
                 <Box
                     key={index}
@@ -175,7 +257,6 @@ const AboutData = () => {
                     </span>
                 </Box>
             ))}
-
             {/* Modal for Editing Content */}
             <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
                 <DialogTitle sx={{ m: 0, p: 2 }}>
@@ -198,9 +279,10 @@ const AboutData = () => {
                         <Box>
                             <Typography variant="subtitle1">Existing Banner:</Typography>
                             <img src={aboutBanner} alt="Banner" width={250} height={250} />
-                            <input type="file" onChange={(e) => setBannerImage(e.target.files[0])} />
+                            <input type="file" onChange={(e) => setBannerImage(e.target.files[0])} /> <br/>
+                            <Button style={{marginTop:"10px"}} variant="contained" onClick={handleAddData}>Add Image</Button>
 
-                            <FormControl sx={{ mt: 2 }}>
+                            {/* <FormControl sx={{ mt: 2 }}>
                                 <FormLabel>Visibility</FormLabel>
                                 <RadioGroup
                                     value={showHide ? "show" : "hide"}
@@ -209,7 +291,7 @@ const AboutData = () => {
                                     <FormControlLabel value="show" control={<Radio />} label="Show" />
                                     <FormControlLabel value="hide" control={<Radio />} label="Hide" />
                                 </RadioGroup>
-                            </FormControl>
+                            </FormControl> */}
                         </Box>
                     )}
 
@@ -248,8 +330,6 @@ const AboutData = () => {
                             </Box>
                         </Box>
                     )}
-
-                    
 
 {currentItem === "ourValues" && (
             <>
@@ -317,40 +397,64 @@ const AboutData = () => {
             </>
         )}
 
-                    {currentItem === "Our Directors Info" && (
-                        <Box>
-                            <Typography variant="subtitle1">Our Directors Info:</Typography>
-                            {/* Placeholder banner image */}
-                            <TextField
-                                variant="outlined"
-                                label="Person1"
-                                fullWidth
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Button variant="contained">Update</Button>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{ mb: 2 }}
-                            />
-                            <br />
-                            <TextField
-                                variant="outlined"
-                                label="Person2"
-                                fullWidth
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Button variant="contained">Update</Button>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                sx={{ mb: 2 }}
+                 
 
-                            />
-                        </Box>
-                    )}
+{currentItem === "Our Directors Info" && (
+        <Box>
+      <Typography variant="subtitle1" gutterBottom>
+        Our Directors Info:
+      </Typography>
+      {loading && <Typography>Loading...</Typography>}
+      {!loading &&
+        personDetails?.map((person) => (
+          <Box key={person.id} sx={{ mb: 4 }}>
+            <TextField
+              variant="outlined"
+              label="Name"
+              fullWidth
+              value={person.name}
+              onChange={(e) => handleChange(e, person.id, "name")}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              variant="outlined"
+              label="Designation"
+              fullWidth
+              value={person.designation}
+              onChange={(e) => handleChange(e, person.id, "designation")}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              variant="outlined"
+              label="Description"
+              fullWidth
+              value={person.description}
+              onChange={(e) => handleChange(e, person.id, "description")}
+              sx={{ mb: 2 }}
+            />
+            <Button variant="outlined" component="label" sx={{ mb: 2 }}>
+              Upload Image
+              <input
+                type="file"
+                hidden
+                onChange={(e) => handleChange(e, person.id, "image")}
+              />
+            </Button>
+            {person.image && (
+              <Typography variant="body2" gutterBottom>
+                Selected Image: {person.image.name || "Existing Image"}
+              </Typography>
+            )}
+            <Button
+              variant="contained"
+              onClick={() => handleEdit(person._id)}
+            >
+              Update
+            </Button>
+          </Box>
+        ))}
+    </Box>
+      )}
                     {currentItem === "Our Milestones" && (
                         <Box>
                             <Typography variant="subtitle2">Our Milestones:</Typography>
@@ -386,6 +490,7 @@ const AboutData = () => {
                 </DialogActions>
             </Dialog>
         </div>
+</Paper>
     );
 };
 

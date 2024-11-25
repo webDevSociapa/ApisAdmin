@@ -1,37 +1,41 @@
-// App.js
-import React, { useState } from "react";
-import Sidebar from "../components/common/sidebar";
-import "../styles/globals.css";
-import { CssBaseline } from "@mui/material";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Sidebar from '../components/common/sidebar'; // Corrected path to sidebar
+import '../styles/globals.css';
 
-export default function App({ Component, pageProps }) {
-  const [loading, setLoading] = useState(false);
+// Pages that don't require authentication
+const publicPages = ['/login'];
 
-  const handleMenuItemClick = async () => {
-    setLoading(true); // Start loading
-    // Simulate a delay to represent loading time, or replace this with your actual async action
-    setTimeout(() => {
-      setLoading(false); // Stop loading once content is ready
-    }, 1000); // Replace with actual loading duration
-  };
+function MyApp({ Component, pageProps }) {
+  const router = useRouter();
 
-  return (
-    <>
-      <CssBaseline />
-      <div style={{ display: "flex" }}>
-        <Sidebar onMenuItemClick={handleMenuItemClick} />
-        <main style={{ flexGrow: 1, padding: "20px" }}>
-          {loading ? (
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-              <CircularProgress />
-            </Box>
-          ) : (
-            <Component {...pageProps} />
-          )}
-        </main>
-      </div>
-    </>
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const isLoggedIn = localStorage.getItem('isLoggedIn');
+      const isPublicPage = publicPages.includes(router.pathname);
+
+      if (!isLoggedIn && !isPublicPage) {
+        router.push('/login');
+      }
+
+      if (isLoggedIn && router.pathname === '/login') {
+        router.push('/');
+      }
+    }
+  }, [router.pathname]);
+
+  const isPublicPage = publicPages.includes(router.pathname);
+
+  return isPublicPage ? (
+    <Component {...pageProps} />
+  ) : (
+    <div className="flex w-full h-screen">
+      <Sidebar />
+      <main className="w-full bg-gray-100 min-h-screen p-4 overflow-auto">
+        <Component {...pageProps} />
+      </main>
+    </div>
   );
 }
+
+export default MyApp;

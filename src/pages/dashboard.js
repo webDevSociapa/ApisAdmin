@@ -16,7 +16,7 @@ const DashBoared = () => {
        
     ]
     return (
-        <Paper>
+        <Paper sx={{ background: "rgba(255, 251, 246, 1)",p:5 }}>
             <Box sx={{p:4}}>
                 <Grid container spacing={2}>
                     {Dashboard.map((item) => {

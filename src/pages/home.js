@@ -13,6 +13,7 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Paper,
 } from "@mui/material";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -323,7 +324,8 @@ const Home = () => {
 
 
   return (
-    <Box>
+    <Paper sx={{ p: 5, background: "rgba(255, 251, 246, 1)" }}>
+      <Box>
       {HomeContent.map((itm, index) => (
         <Box
           key={index}
@@ -331,7 +333,6 @@ const Home = () => {
             border: "1px solid #AE844A",
             p: 3,
             mb: 2,
-            mx: 10,
             mt: 4,
             borderRadius: "10px",
             fontFamily: "jost",
@@ -623,6 +624,7 @@ const Home = () => {
       </Dialog>
       <ToastContainer /> {/* Add ToastContainer for notifications */}
     </Box>
+    </Paper>
   );
 };
 

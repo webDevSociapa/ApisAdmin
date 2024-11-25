@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, Paper, TextField, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 
 const Media = () => {
@@ -73,7 +73,7 @@ const Media = () => {
     };
 
     return (
-        <>
+        <Paper sx={{ p: 5, background: "rgba(255, 251, 246, 1)" }}>
             {DataSet.map((itm, index) => (
                 <Box
                     key={index}
@@ -224,7 +224,7 @@ const Media = () => {
                     <Button onClick={handleAddData}>Update</Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </Paper>
     );
 };
 

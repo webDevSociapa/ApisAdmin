@@ -7,6 +7,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+
 const Blogs = () => {
     const [blogs, setBlogs] = useState([]);
     const [selectedBlogId, setSelectedBlogId] = useState(null);
@@ -103,8 +107,8 @@ const Blogs = () => {
     };
 
     return (
-        <Box>
-            <Paper sx={{ p: 5, mb: 4 }}>
+        <Paper sx={{ p: 5, background: "rgba(255, 251, 246, 1)" }}>
+             <Box>
                 <Typography variant="h4" gutterBottom>
                     {selectedBlogId ? "Edit Blog" : "Add New Blog"}
                 </Typography>
@@ -172,9 +176,7 @@ const Blogs = () => {
                 <Button onClick={handleAddOrUpdate} variant="contained" sx={{ background: "#9F7B49", px: 4, color: "#fff" }}>
                     {selectedBlogId ? "Update Blog" : "Add Blog"}
                 </Button>
-            </Paper>
 
-            <Paper sx={{ p: 5 }}>
                 <Typography variant="h5" gutterBottom>
                     Existing Blogs
                 </Typography>
@@ -193,8 +195,8 @@ const Blogs = () => {
                         </Button>
                     </Box>
                 ))}
-            </Paper>
         </Box>
+</Paper>
     );
 };
 
