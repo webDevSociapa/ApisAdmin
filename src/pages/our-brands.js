@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Image from 'next/image';
+import axios from 'axios';
 
 
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;

@@ -19,7 +19,7 @@ const Blogs = () => {
         blogTitle: "",
         contentData: "",
         desc: "",
-        blogDate: null,
+        blogDate: "",
     });
 
     // Fetch all blogs on component mount
@@ -38,6 +38,9 @@ const Blogs = () => {
     const uploadFile = (file) => {
         setBannerImage(file);
     };
+
+    console.log("blogData",blogData);
+    
 
     const handleChange = (field, value) => {
         setBlogData((prev) => ({
@@ -85,7 +88,7 @@ const Blogs = () => {
                 blogTitle: "",
                 contentData: "",
                 desc: "",
-                blogDate: null,
+                blogDate: "",
             });
             setBannerImage(null);
             setSelectedBlogId(null);
@@ -138,7 +141,10 @@ const Blogs = () => {
                 </Box>
 
                 <TextField
+                label="blog Date"
+                value={blogData.blogDate}
 
+                onChange={(e) => handleChange("blogDate", e.target.value)}
                 />
 
                 {/* <LocalizationProvider dateAdapter={AdapterDayjs}>

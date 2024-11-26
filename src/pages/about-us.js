@@ -285,9 +285,6 @@ const AboutData = () => {
                                 </Box>
                             </Box>
                         )}
-
-
-
                         {currentItem === "ourValues" && (
                             <>
                                 <Box padding={2}>
@@ -353,7 +350,6 @@ const AboutData = () => {
                                 </Box>
                             </>
                         )}
-
                         {currentItem === "Our Directors Info" && (
                             <Box>
                                 <Card sx={{ padding: "10px" }}>
@@ -374,27 +370,25 @@ const AboutData = () => {
                                     <TextField
                                         label="Person Desination"
                                         fullWidth
-                                        style={{marginTop:"10px"}}
+                                        style={{ marginTop: "10px" }}
                                     />
                                     <br />
                                     <TextField
                                         label="Person Description"
                                         fullWidth
-                                        style={{marginTop:"10px"}}
+                                        style={{ marginTop: "10px" }}
 
                                     />
                                     <br />
                                     <input
                                         type="file"
                                         onChange={(e) => setImageFile(e.target.files[0])}
-                                        style={{ marginBottom: "15px",marginTop:"10px" }}
+                                        style={{ marginBottom: "15px", marginTop: "10px" }}
                                     />
-<br/>
+                                    <br />
                                     <Button variant="contained">Edit Data</Button>
                                 </Card>
                                 <br />
-                                {currentItem === "Our Directors Info" && (
-                            <Box>
                                 <Card sx={{ padding: "10px" }}>
                                     <Typography variant="subtitle1">Our Directors Info:</Typography>
                                     {/* Placeholder banner image */}
@@ -413,37 +407,26 @@ const AboutData = () => {
                                     <TextField
                                         label="Person Desination"
                                         fullWidth
-                                        style={{marginTop:"10px"}}
+                                        style={{ marginTop: "10px" }}
                                     />
                                     <br />
                                     <TextField
                                         label="Person Description"
                                         fullWidth
-                                        style={{marginTop:"10px"}}
+                                        style={{ marginTop: "10px" }}
 
                                     />
                                     <br />
                                     <input
                                         type="file"
                                         onChange={(e) => setImageFile(e.target.files[0])}
-                                        style={{ marginBottom: "15px",marginTop:"10px" }}
+                                        style={{ marginBottom: "15px", marginTop: "10px" }}
                                     />
-<br/>
+                                    <br />
                                     <Button variant="contained">Edit Data</Button>
                                 </Card>
-                                <br />
-                                
-
-
                             </Box>
                         )}
-
-
-                            </Box>
-                        )}
-
-
-
                         {currentItem === "Our Milestones" && (
                             <Box>
                                 <Typography variant="subtitle2">Our Milestones:</Typography>
@@ -459,7 +442,6 @@ const AboutData = () => {
                                     label="add Image Url here"
                                 />
                             </Box>
-
                         )}
                         {["Headline", "Change Banner Text"].includes(currentItem) && (
                             <TextareaAutosize
@@ -470,7 +452,6 @@ const AboutData = () => {
                                 style={{ width: '100%' }} // Set width to your desired value
                                 sx={{ mt: 2, width: '100%' }} // Or adjust as needed
                             />
-
                         )}
                     </DialogContent>
                     <DialogActions>

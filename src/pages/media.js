@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, Paper, TextField, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
@@ -9,6 +9,7 @@ const Media = () => {
     const [mediaImage, setMediaImage] = useState(null);
     const [title, setTitle] = useState("");
     const [videoUrl, setVideoUrl] = useState("");
+    const [mediaGallery,setMediaGallery] = useState([])
 
     const handleEditClick = (item) => {
         setCurrentItem(item.name);
@@ -28,6 +29,49 @@ const Media = () => {
         { name: "TVC" },
         { name: "Our Campaigns" },
     ];
+
+
+    const handleDelete = async (id) => {
+        // if (currentItem === "Banner") {
+          try {
+            await axios.delete(`/api/mediaGallery?id=${id}`); // Pass id as query parameter
+            setMediaGallery((prev) => prev.filter((item) => item._id !== id));
+          } catch (error) {
+            console.error("Error deleting video:", error);
+          }
+        }
+        // } else if (currentItem === "Our Availability") {
+        //   try {
+        //     const response = await axios.delete(`/api/HomePage/ourAvailability?id=${id}`); // Pass id as query parameter
+        //     console.log("response", response);
+    
+        //     // Remove the deleted item from the state after successful deletion
+        //     setAvailability((prev) => prev.filter((item) => item._id !== id));
+    
+        //   } catch (error) {
+        //     console.error("Error deleting availability item:", error);
+        //   }
+        // } else if( currentItem === "Taste Product"){
+        //   try{
+        //     const response = await axios.delete(`/api/HomePage/tasteProduct?id=${id}`); //
+        //     setProductsData((prev)=> prev.filter((item)=>item._id !== id));
+        //     fetchData()
+        //   }
+        //   catch(error){
+        //     console.error("Error deleting product:", error);
+        //   }
+        
+        // } else if( currentItem === "Life @Apis"){
+        //   try{
+        //     const response = await axios.delete(`/api/HomePage/LifeAtApis?id=${id}`); //
+        //     setLifeAtApis((prev)=> prev.filter((item)=>item._id !== id));
+        //     toast.success("Delete Successfully");
+        //     fetchData()
+        //   }
+        //   catch(error){
+        //     console.error("Error deleting product:", error);
+        //   }
+    
 
     const handleAddData = async () => {
         try {
@@ -60,7 +104,6 @@ const Media = () => {
                     },
                 });
             }
-
             if (response && response.status === 200) {
                 console.log("Operation successful:", response.data);
                 handleClose();
@@ -71,6 +114,20 @@ const Media = () => {
             console.error("Error during operation:", error);
         }
     };
+
+    useEffect(()=>{
+        const fetchGalleryData = async () => {
+            try {
+                const response = await axios.get("/api/mediaGallery");
+                console.log("response",response);
+                setMediaGallery(response.data)
+            } catch (error) { 
+                console.log("error",error);       
+            }
+        }
+        fetchGalleryData()
+      
+    },[])
 
     return (
         <Paper sx={{ p: 5, background: "rgba(255, 251, 246, 1)" }}>
@@ -148,13 +205,30 @@ const Media = () => {
 
                     {currentItem === "Media Gallery" && (
                         <>
+
+                        {mediaGallery?.map((item)=>(
+                            <>
+                           
+                            <Typography>{item.title}</Typography>
+                            <img src={item.mediaGallery}/>
+                            <Button
+                      variant="outlined"
+                      color="error"
+                      size="small"
+                      onClick={() => handleDelete(item._id)}
+                      sx={{ ml: 2,mt: 2, height: "40px", width: "40px" }}
+                    >
+                      Delete
+                    </Button>
+                            </>
+                        ))}
                             <TextField
                                 variant="outlined"
                                 fullWidth
                                 label="Media Gallery Title"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                sx={{ mb: 2 }}
+                                sx={{ mb: 2,mt: 5 }}
                             />
                             <input
                                 type="file"
