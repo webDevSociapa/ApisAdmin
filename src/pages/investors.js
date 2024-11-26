@@ -1,5 +1,9 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField, Typography } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, TextField, Typography } from "@mui/material"
 import { useState } from "react";
+import axios from "axios";
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 
 
 const Investors = () =>{
@@ -33,7 +37,8 @@ const Investors = () =>{
         {name:"Scheme of Amalgamation"},
     ]
     return(
-        <>
+      <Paper sx={{ p: 5, background: "rgba(255, 251, 246, 1)" }}>
+
         {InvestorData.map((itm, index) => (
         <Box
           key={index}
@@ -156,7 +161,7 @@ const Investors = () =>{
           <Button onClick={handleUpdate}>Update</Button>
         </DialogActions>
       </Dialog>
-        </>
+        </Paper>
     )
 }
 

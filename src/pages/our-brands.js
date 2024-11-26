@@ -3,11 +3,16 @@ import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { Button, Dialog, DialogActions, DialogTitle, TextareaAutosize, Typography, IconButton, DialogContent, TextField, Divider, InputAdornment, Card, Grid } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogTitle, TextareaAutosize, Typography, IconButton, DialogContent, TextField, Divider, InputAdornment, Card, Grid, Paper } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Image from 'next/image';
+import axios from 'axios';
+
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -238,7 +243,8 @@ export default function BasicTabs() {
     // const handk
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Paper sx={{ p: 5, background: "rgba(255, 251, 246, 1)" }}>
+            <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                     {DataSetOfItem.map((itm, index) => (
@@ -521,5 +527,6 @@ export default function BasicTabs() {
                 </DialogActions> : ""}
             </Dialog>
         </Box>
+        </Paper>
     );
 }

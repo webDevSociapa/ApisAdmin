@@ -1,6 +1,9 @@
-import { Button, InputAdornment, TextField, Typography } from "@mui/material";
+import { Button, InputAdornment, Paper, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 
 const ContactUS = () => {
     const [headOffice, setHeadOffice] = useState("");
@@ -47,7 +50,8 @@ const ContactUS = () => {
     };
 
     return (
-        <>
+        <Paper sx={{ p: 5, background: "rgba(255, 251, 246, 1)" }}>
+
             <Typography variant="h6">Change Contact Details</Typography>
 
             {error && <Typography color="error">{error}</Typography>} {/* Display error message */}
@@ -103,7 +107,7 @@ const ContactUS = () => {
 
             {/* Optional Email Update */}
            
-        </>
+        </Paper>
     );
 };
 

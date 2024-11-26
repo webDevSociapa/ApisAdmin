@@ -31,6 +31,7 @@ import StayCurrentPortraitIcon from '@mui/icons-material/StayCurrentPortrait';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountMenu from './adminProfile';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 const menuItems = [
   { text: 'Dashboard', icon: <DashboardIcon />, link: '/dashboard' },
@@ -55,6 +56,14 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const drawerWidth = isCollapsed ? 60 : 250;
 
+  const router = useRouter()
+
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn')
+    router.push('/login')
+  }
+
+
   return (
    <Box>
      <Drawer
@@ -73,7 +82,7 @@ const Sidebar = () => {
       variant="permanent"
       anchor="left"
     >
-      <Image src={Logo} height={140} width={140}/>
+      <Image src={Logo} height={80} width={80} style={{margin:"8px 3px"}}/>
       {/* Toggle Button */}
       <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
         <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>

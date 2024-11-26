@@ -1,11 +1,15 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, TextField, Typography, CircularProgress } from "@mui/material"
+import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, TextField, Typography, CircularProgress, Paper } from "@mui/material"
 import CloseIcon from '@mui/icons-material/Close'
 import axios from "axios"
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 
 export default function Careers() {
   const [open, setOpen] = useState(false)
@@ -121,7 +125,7 @@ export default function Careers() {
   }, [])
 
   return (
-    <>
+    <Paper sx={{ p: 5, background: "rgba(255, 251, 246, 1)" }}>
       {careerItems.map((item, index) => (
         <Box
           key={index}
@@ -301,6 +305,6 @@ export default function Careers() {
         </DialogContent>
       </Dialog>
       <ToastContainer />
-    </>
+    </Paper>
   )
 }
