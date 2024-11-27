@@ -18,8 +18,8 @@ import {
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CloseIcon from "@mui/icons-material/Close";
+import axiosInstance from "../utils/axiosInstance";
 
-axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const Home = () => {
   const HomeContent = [
@@ -59,7 +59,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const headingResponse = await axios.get("/api/HomePage/heading");
+        const headingResponse = await axiosInstance.get('/api/HomePage/heading');
         setHeadingContent(headingResponse.data[0].headingContent || "Default Headline");
 
         const availabilityResponse = await axios.get("/api/HomePage/ourAvailability");
