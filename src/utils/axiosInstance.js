@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: 'https://apis-admin-dm.vercel.app/', // Use the base URL from .env file
+    baseURL: 'https://apis-web-dkcu.vercel.app/', // Use the base URL from .env file
 });
 
 axiosInstance.interceptors.response.use(
