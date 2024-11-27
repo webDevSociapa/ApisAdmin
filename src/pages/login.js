@@ -6,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.css'; // Import styles for toastify
 import axiosInstance from '../utils/axiosInstance';
 
 // Set base URL for axios (using environment variable)
-axios.defaults.baseURL = "https://apis-admin-dm.vercel.app/";
 
 export default function Login() {
   const [username, setUsername] = useState('');
