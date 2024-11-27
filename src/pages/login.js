@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify'; // Import toastify
 import 'react-toastify/dist/ReactToastify.css'; // Import styles for toastify
+import axiosInstance from '../utils/axiosInstance';
 
 // Set base URL for axios (using environment variable)
 axios.defaults.baseURL = "https://apis-admin-dm.vercel.app/";
@@ -21,7 +22,7 @@ export default function Login() {
 
     try {
       // Make login request to backend
-      const response = await axios.post('/api/Auth/login', { username, password });
+      const response = await axiosInstance.post('/api/Auth/login', { username, password });
 
       if (response.status === 200) {
         // On success, store login status and navigate to dashboard
